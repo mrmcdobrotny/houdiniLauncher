@@ -1,7 +1,7 @@
 import sys, os.path
 
 from PySide2.QtWidgets import *
-from PySide2.QtCore import QDir, Qt, QSortFilterProxyModel
+from PySide2.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
 
 from uiHoudiniLauncher_002 import Ui_HoudiniLauncher
 
@@ -9,27 +9,48 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
+        self.onStart()
         self.populate()
-        #self.projects_location.editingFinished.connect(self.populate)
+        self.setDefaultPath()
+        self.listProjects()
+        
+        self.setProject()
+        #self.projects_location.textChanged.connect(self.populate)
         self.projects_location.editingFinished.connect(self.listProjects)
         self.treeView.selectionModel().selectionChanged.connect(self.setPath)
+        #self.treeView.selectionModel().selectionChanged.connect(self.onStart)
+        #self.treeView.selectionModel().selectionChanged.connect(self.populate)
         self.treeView.selectionModel().selectionChanged.connect(self.listProjects)
         self.projects_list.currentTextChanged.connect(self.setProject)
+
+        self.launch_project.clicked.connect(self.onQuit)
+        self.launch_project.clicked.connect(self.close)
+
+    def onStart(self):
+        print("Start")
+
+    def onQuit(self):
+        print("Quit")
 
     def populate(self):
         path = self.projects_location.text()
         self.model = QFileSystemModel()
+        self.model.setFilter(QDir.NoDotAndDotDot | QDir.Dirs)
         self.model.setRootPath(QDir.rootPath())
         self.treeView.setModel(self.model)
-        #self.treeView.setRootIndex(self.model.index(path))
+        self.treeView.setRootIndex(self.model.index(path))
         self.treeView.setSortingEnabled(True)
         self.treeView.sortByColumn(0, Qt.AscendingOrder)
         self.treeView.setColumnHidden(2, True)
         self.treeView.setColumnHidden(1, True)
 
+    def setDefaultPath(self):
+        self.project_path = self.projects_list.currentData()
+
     def setPath(self):
         index = self.treeView.currentIndex()
         path = self.model.filePath(index)
+        print(path)
         self.projects_location.setText(path)
 
     def listProjects(self):
@@ -46,14 +67,15 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         print(self.project_path)
 
         shotsModel = QFileSystemModel()
-        shotsModel.setRootPath(self.project_path)
-        shotsModel.setFilter(QDir.NoDotAndDotDot)
+        shotsModel.setRootPath(QDir.rootPath())
+        #shotsModel.setFilter(QDir.NoDotAndDotDot)
+        #shotsModel.setFilter(QDir.AllEntries)
         proxyModel = QSortFilterProxyModel()
         proxyModel.setSourceModel(shotsModel)
         proxyModel.setFilterWildcard("*.hip")
 
-        self.treeViewShots.setModel(proxyModel)
-        self.treeViewShots.setRootIndex(proxyModel.index(self.project_path))
+        self.treeViewShots.setModel(shotsModel)
+        self.treeViewShots.setRootIndex(shotsModel.index(self.project_path))
         self.treeViewShots.setSortingEnabled(True)
         self.treeViewShots.sortByColumn(0, Qt.AscendingOrder)
         self.treeViewShots.setColumnHidden(2, True)

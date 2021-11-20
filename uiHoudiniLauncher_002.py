@@ -141,7 +141,7 @@ class Ui_HoudiniLauncher(object):
 
     def retranslateUi(self, HoudiniLauncher):
         HoudiniLauncher.setWindowTitle(QCoreApplication.translate("HoudiniLauncher", u"MainWindow", None))
-        self.projects_location.setText(QCoreApplication.translate("HoudiniLauncher", u"/media/white/projects", None))
+        self.projects_location.setText(QCoreApplication.translate("HoudiniLauncher", u"/500GB_HDD_01/projects/my_daily_projects", None))
         self.label_3.setText(QCoreApplication.translate("HoudiniLauncher", u"Shots Browser", None))
         self.label.setText(QCoreApplication.translate("HoudiniLauncher", u"Projects Location", None))
         self.label_2.setText(QCoreApplication.translate("HoudiniLauncher", u"Launch Project", None))
