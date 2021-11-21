@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'houdini_launcher_v002FXmTbG.ui'
+## Form generated from reading UI file 'uiHoudiniLauncher_v002kFKuNK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.0
 ##
@@ -27,63 +27,71 @@ class Ui_HoudiniLauncher(object):
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
+        self.checkLoadFile = QCheckBox(self.centralwidget)
+        self.checkLoadFile.setObjectName(u"checkLoadFile")
+
+        self.gridLayout.addWidget(self.checkLoadFile, 2, 3, 1, 1)
+
         self.projects_location = QLineEdit(self.centralwidget)
         self.projects_location.setObjectName(u"projects_location")
 
         self.gridLayout.addWidget(self.projects_location, 0, 3, 1, 1)
 
-        self.treeView = QTreeView(self.centralwidget)
-        self.treeView.setObjectName(u"treeView")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.treeView.sizePolicy().hasHeightForWidth())
-        self.treeView.setSizePolicy(sizePolicy)
-        self.treeView.setBaseSize(QSize(0, 0))
-        self.treeView.setEditTriggers(QAbstractItemView.DoubleClicked|QAbstractItemView.EditKeyPressed|QAbstractItemView.SelectedClicked)
-        self.treeView.setIndentation(20)
-        self.treeView.setSortingEnabled(False)
-        self.treeView.header().setMinimumSectionSize(200)
-        self.treeView.header().setDefaultSectionSize(300)
+        self.shotsList = QComboBox(self.centralwidget)
+        self.shotsList.setObjectName(u"shotsList")
 
-        self.gridLayout.addWidget(self.treeView, 1, 3, 1, 1)
-
-        self.label_3 = QLabel(self.centralwidget)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
-
-        self.gridLayout.addWidget(self.label_3, 4, 2, 1, 1)
+        self.gridLayout.addWidget(self.shotsList, 4, 3, 1, 1)
 
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
+        self.label.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.gridLayout.addWidget(self.label, 0, 2, 1, 1)
 
+        self.label_5 = QLabel(self.centralwidget)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout.addWidget(self.label_5, 4, 2, 1, 1)
+
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
-        self.gridLayout.addWidget(self.label_2, 2, 2, 1, 1)
-
-        self.projects_list = QComboBox(self.centralwidget)
-        self.projects_list.setObjectName(u"projects_list")
-
-        self.gridLayout.addWidget(self.projects_list, 2, 3, 1, 1)
-
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.gridLayout.addItem(self.verticalSpacer_2, 6, 3, 1, 1)
+        self.gridLayout.addWidget(self.label_2, 1, 2, 1, 1)
 
         self.treeViewShots = QTreeView(self.centralwidget)
         self.treeViewShots.setObjectName(u"treeViewShots")
         self.treeViewShots.header().setMinimumSectionSize(200)
         self.treeViewShots.header().setDefaultSectionSize(300)
 
-        self.gridLayout.addWidget(self.treeViewShots, 4, 3, 1, 1)
+        self.gridLayout.addWidget(self.treeViewShots, 5, 3, 1, 1)
 
-        self.checkBox = QCheckBox(self.centralwidget)
-        self.checkBox.setObjectName(u"checkBox")
+        self.projects_list = QComboBox(self.centralwidget)
+        self.projects_list.setObjectName(u"projects_list")
 
-        self.gridLayout.addWidget(self.checkBox, 3, 3, 1, 1)
+        self.gridLayout.addWidget(self.projects_list, 1, 3, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer_2, 7, 3, 1, 1)
+
+        self.label_3 = QLabel(self.centralwidget)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout.addWidget(self.label_3, 5, 2, 1, 1)
+
+        self.tasksList = QComboBox(self.centralwidget)
+        self.tasksList.setObjectName(u"tasksList")
+
+        self.gridLayout.addWidget(self.tasksList, 3, 3, 1, 1)
+
+        self.label_6 = QLabel(self.centralwidget)
+        self.label_6.setObjectName(u"label_6")
+        self.label_6.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.gridLayout.addWidget(self.label_6, 3, 2, 1, 1)
 
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
@@ -141,11 +149,13 @@ class Ui_HoudiniLauncher(object):
 
     def retranslateUi(self, HoudiniLauncher):
         HoudiniLauncher.setWindowTitle(QCoreApplication.translate("HoudiniLauncher", u"MainWindow", None))
+        self.checkLoadFile.setText(QCoreApplication.translate("HoudiniLauncher", u"Load scene file", None))
         self.projects_location.setText(QCoreApplication.translate("HoudiniLauncher", u"/500GB_HDD_01/projects/my_daily_projects", None))
-        self.label_3.setText(QCoreApplication.translate("HoudiniLauncher", u"Shots Browser", None))
         self.label.setText(QCoreApplication.translate("HoudiniLauncher", u"Projects Location", None))
+        self.label_5.setText(QCoreApplication.translate("HoudiniLauncher", u"File", None))
         self.label_2.setText(QCoreApplication.translate("HoudiniLauncher", u"Launch Project", None))
-        self.checkBox.setText(QCoreApplication.translate("HoudiniLauncher", u"Load file", None))
+        self.label_3.setText(QCoreApplication.translate("HoudiniLauncher", u"Shots Browser", None))
+        self.label_6.setText(QCoreApplication.translate("HoudiniLauncher", u"Task", None))
         self.launch_project.setText(QCoreApplication.translate("HoudiniLauncher", u"Launch", None))
         self.checkDefaultEnv.setText(QCoreApplication.translate("HoudiniLauncher", u"Default", None))
         self.label_4.setText(QCoreApplication.translate("HoudiniLauncher", u"Load environment", None))
