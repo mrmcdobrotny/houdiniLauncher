@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'houdini_launcheruSyIcX.ui'
+## Form generated from reading UI file 'houdini_launcherBVULop.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.0
 ##
@@ -32,10 +32,11 @@ class Ui_HoudiniLauncher(object):
 
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label = QLabel(self.centralwidget)
-        self.label.setObjectName(u"label")
+        self.projects_location = QLineEdit(self.centralwidget)
+        self.projects_location.setObjectName(u"projects_location")
+        self.projects_location.setText(u"/media/white/projects/")
 
-        self.gridLayout.addWidget(self.label, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.projects_location, 0, 3, 1, 1)
 
         self.label_2 = QLabel(self.centralwidget)
         self.label_2.setObjectName(u"label_2")
@@ -47,10 +48,10 @@ class Ui_HoudiniLauncher(object):
 
         self.gridLayout.addWidget(self.projects_list, 1, 3, 1, 1)
 
-        self.projects_location = QLineEdit(self.centralwidget)
-        self.projects_location.setObjectName(u"projects_location")
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
 
-        self.gridLayout.addWidget(self.projects_location, 0, 3, 1, 1)
+        self.gridLayout.addWidget(self.label, 0, 2, 1, 1)
 
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
@@ -77,8 +78,7 @@ class Ui_HoudiniLauncher(object):
     def retranslateUi(self, HoudiniLauncher):
         HoudiniLauncher.setWindowTitle(QCoreApplication.translate("HoudiniLauncher", u"MainWindow", None))
         self.launch_project.setText(QCoreApplication.translate("HoudiniLauncher", u"Launch", None))
-        self.label.setText(QCoreApplication.translate("HoudiniLauncher", u"Projects Location", None))
         self.label_2.setText(QCoreApplication.translate("HoudiniLauncher", u"Launch Project", None))
-        self.projects_location.setText(QCoreApplication.translate("HoudiniLauncher", u"/media/white/projects", None))
+        self.label.setText(QCoreApplication.translate("HoudiniLauncher", u"Projects Location", None))
     # retranslateUi
 

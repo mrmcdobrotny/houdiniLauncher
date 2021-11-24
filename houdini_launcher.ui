@@ -24,10 +24,10 @@
     </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="2">
-       <widget class="QLabel" name="label">
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="projects_location">
         <property name="text">
-         <string>Projects Location</string>
+         <string notr="true">/media/white/projects/</string>
         </property>
        </widget>
       </item>
@@ -41,10 +41,10 @@
       <item row="1" column="3">
        <widget class="QComboBox" name="projects_list"/>
       </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="projects_location">
+      <item row="0" column="2">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>/media/white/projects</string>
+         <string>Projects Location</string>
         </property>
        </widget>
       </item>
