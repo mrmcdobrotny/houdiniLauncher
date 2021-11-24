@@ -11,7 +11,9 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.checkOS()
+        self.initTable()
         self.onStart()
+
 
         
         ##self.listProjects()
@@ -69,7 +71,7 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
 
 
         #self.savePreset.clicked.connect(self.onQuit)
-        self.launch_project.clicked.connect(self.onQuit)
+        #self.launch_project.clicked.connect(self.onQuit)
         self.launch_project.clicked.connect(self.launchHoudini)
         self.launch_project.clicked.connect(self.close)
 
@@ -79,19 +81,57 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.projects_location.setText("T:\\projects\\")
             self.os = "Windows"
 
+    def initTable(self):
+        self.hda_folders = glob.glob("/media/white/tools/otls/hda_*")
+        self.hda_labels = []
+        [self.hda_labels.append(os.path.split(path)[1][4:]) for path in self.hda_folders]
+
+
+        for row, label in enumerate(self.hda_labels):
+            
+            item = QListWidgetItem("{}".format(label))
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Unchecked)
+            #item.setCheckable(True)
+            #if inHdaFolder:
+            #    item.setCheckState(QtCore.Qt.CheckState.Checked)
+            self.listWidget.addItem(item)
+
+            
+
+    """
+        self.model.setHorizontalHeaderLabels(self.hda_labels)
+        self.proxy = QtCore.QSortFilterProxyModel(self)
+        self.proxy.setSourceModel(self.model)
+        self.tableView.setModel(self.proxy)
+        
+        self.tableView.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        self.tableView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    """
     def onStart(self):
         #print("Start")
         try:
             settings = json.load(open(os.path.join(os.environ["HOME"], ".houdiniLauncher.conf")))
-            #print(settings)
+            #print(self.listWidget.count())
+            
+            for index in range(self.listWidget.count()):
+                item = self.listWidget.item(index)
+                if settings["check{}".format(item.text())]:
+                    state = Qt.Checked
+                else:
+                    state = Qt.Unchecked
+                item.setCheckState(state)
+                
+            """            
             self.checkLoadFile.setChecked(settings["checkLoadFile"])
             self.checkDefaultEnv.setChecked(settings["checkDefaultEnv"])
             self.checkProjectEnv.setChecked(settings["checkProjectEnv"])
             self.checkWowsEnv.setChecked(settings["checkWowsEnv"])
             self.checkOrcEnv.setChecked(settings["checkOrcEnv"])
             self.checkShEnv.setChecked(settings["checkShEnv"])
+            
+            """
             self.checkFx.setChecked(settings["checkFx"])
-
             self.projects_location.setText(settings["projects_location"])
             self.updateProjectsList()
             self.projects_list.setCurrentIndex(settings["projects_list_current"])
@@ -112,6 +152,10 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.updateTaskTypeList()
             self.updateShotsList()
             self.populateBrowser()
+
+
+    def closeEvent(self, event):
+        self.onQuit()
         
     def onQuit(self):
         settings = {}
@@ -121,15 +165,25 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         settings["tasksList_current"] = self.tasksList.currentIndex()
         settings["taskTypeList_current"] = self.taskTypeList.currentIndex()
         settings["shotsList_current"] = self.shotsList.currentIndex()
+        settings["checkFx"] = self.checkFx.isChecked()
+
+        for index in range(self.listWidget.count()):
+            item = self.listWidget.item(index)
+            isChecked = item.checkState() == Qt.Checked
+            settings["check{}".format(item.text())] = isChecked
+        #print(settings)
+
+        """
         settings["checkDefaultEnv"] = self.checkDefaultEnv.isChecked()
         settings["checkProjectEnv"] = self.checkProjectEnv.isChecked()
         settings["checkWowsEnv"] = self.checkWowsEnv.isChecked()
         settings["checkOrcEnv"] = self.checkOrcEnv.isChecked()
         settings["checkShEnv"] = self.checkShEnv.isChecked()
-        settings["checkFx"] = self.checkFx.isChecked()
+        """
         #print("Exiting")
         f = open(os.path.join(os.environ["HOME"], ".houdiniLauncher.conf"), "w")
         jsn = json.dumps(settings, indent = 4)
+        #print(jsn)
         f.write(jsn)
         f.close()
         
@@ -141,10 +195,21 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         houdini_otls = "/media/white/tools/otls"
         houdini_otlscan_path = os.environ["HOUDINI_OTLSCAN_PATH"]
 
+        for index in range(self.listWidget.count()):
+            item = self.listWidget.item(index)
+            isChecked = item.checkState() == Qt.Checked
+            otl_dirname = "hda_{}".format(item.text())
+            otl_path = os.path.join(houdini_otls, otl_dirname)
+            if isChecked and not otl_path in os.environ["HOUDINI_OTLSCAN_PATH"]:
+                os.environ["HOUDINI_OTLSCAN_PATH"] = "{};{}".format(otl_path, os.environ["HOUDINI_OTLSCAN_PATH"])
+
+
+        """
         otls_default = os.path.join(houdini_otls, "global")
         otls_orc = os.path.join(houdini_otls, "orc")
         otls_sh = os.path.join(houdini_otls, "SH")
         otls_wows = os.path.join(houdini_otls, "wows")
+
 
         if self.checkDefaultEnv.isChecked() and not otls_default in houdini_otlscan_path:
             os.environ["HOUDINI_OTLSCAN_PATH"] = otls_default + ";" + houdini_otlscan_path
@@ -157,8 +222,8 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
 
         if self.checkWowsEnv.isChecked() and not otls_wows in houdini_otlscan_path:
             os.environ["HOUDINI_OTLSCAN_PATH"] = otls_wows + ";" + houdini_otlscan_path
-
-        print("HOUDINI_OTLSCAN_PATH {}\n".format(os.environ["HOUDINI_OTLSCAN_PATH"]))
+        """
+        print("HOUDINI_OTLSCAN_PATH={}\n".format(os.environ["HOUDINI_OTLSCAN_PATH"]))
         if self.checkFx.isChecked():
             houdini = "houdinifx"
         else:

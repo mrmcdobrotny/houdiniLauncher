@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'uiHoudiniLauncher_v002MNKVYS.ui'
+## Form generated from reading UI file 'uiHoudiniLaunchervPjkYS.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.0
 ##
@@ -28,35 +28,29 @@ class Ui_HoudiniLauncher(object):
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        self.frame.setMinimumSize(QSize(0, 110))
+        self.frame.setMinimumSize(QSize(0, 200))
         self.frame.setFrameShape(QFrame.NoFrame)
         self.frame.setFrameShadow(QFrame.Raised)
         self.frame.setLineWidth(0)
-        self.checkDefaultEnv = QCheckBox(self.frame)
-        self.checkDefaultEnv.setObjectName(u"checkDefaultEnv")
-        self.checkDefaultEnv.setGeometry(QRect(10, 30, 85, 21))
-        self.checkDefaultEnv.setChecked(True)
+        self.formLayout = QFormLayout(self.frame)
+        self.formLayout.setObjectName(u"formLayout")
         self.label_4 = QLabel(self.frame)
         self.label_4.setObjectName(u"label_4")
-        self.label_4.setGeometry(QRect(10, 10, 121, 16))
-        self.checkProjectEnv = QCheckBox(self.frame)
-        self.checkProjectEnv.setObjectName(u"checkProjectEnv")
-        self.checkProjectEnv.setGeometry(QRect(10, 60, 151, 21))
-        self.checkProjectEnv.setChecked(True)
-        self.checkWowsEnv = QCheckBox(self.frame)
-        self.checkWowsEnv.setObjectName(u"checkWowsEnv")
-        self.checkWowsEnv.setGeometry(QRect(140, 30, 85, 21))
-        self.checkOrcEnv = QCheckBox(self.frame)
-        self.checkOrcEnv.setObjectName(u"checkOrcEnv")
-        self.checkOrcEnv.setGeometry(QRect(140, 60, 85, 21))
-        self.checkShEnv = QCheckBox(self.frame)
-        self.checkShEnv.setObjectName(u"checkShEnv")
-        self.checkShEnv.setGeometry(QRect(230, 30, 85, 21))
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_4)
+
+        self.listWidget = QListWidget(self.frame)
+        self.listWidget.setObjectName(u"listWidget")
+
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.listWidget)
+
         self.launch_project = QPushButton(self.frame)
         self.launch_project.setObjectName(u"launch_project")
-        self.launch_project.setGeometry(QRect(620, 80, 100, 23))
         self.launch_project.setMaximumSize(QSize(100, 16777215))
         self.launch_project.setLayoutDirection(Qt.RightToLeft)
+
+        self.formLayout.setWidget(2, QFormLayout.FieldRole, self.launch_project)
+
 
         self.gridLayout_2.addWidget(self.frame, 2, 0, 1, 1)
 
@@ -181,12 +175,7 @@ class Ui_HoudiniLauncher(object):
 
     def retranslateUi(self, HoudiniLauncher):
         HoudiniLauncher.setWindowTitle(QCoreApplication.translate("HoudiniLauncher", u"MainWindow", None))
-        self.checkDefaultEnv.setText(QCoreApplication.translate("HoudiniLauncher", u"Default", None))
         self.label_4.setText(QCoreApplication.translate("HoudiniLauncher", u"Load environment", None))
-        self.checkProjectEnv.setText(QCoreApplication.translate("HoudiniLauncher", u"Project specific", None))
-        self.checkWowsEnv.setText(QCoreApplication.translate("HoudiniLauncher", u"WOWS", None))
-        self.checkOrcEnv.setText(QCoreApplication.translate("HoudiniLauncher", u"ORC", None))
-        self.checkShEnv.setText(QCoreApplication.translate("HoudiniLauncher", u"SH", None))
         self.launch_project.setText(QCoreApplication.translate("HoudiniLauncher", u"Launch", None))
         self.taskTypeList.setItemText(0, QCoreApplication.translate("HoudiniLauncher", u"animation", None))
         self.taskTypeList.setItemText(1, QCoreApplication.translate("HoudiniLauncher", u"fx", None))
