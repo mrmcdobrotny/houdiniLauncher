@@ -77,6 +77,11 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.projects_location.setText("T:\\projects\\")
             self.os = "Windows"
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
+            self.launchHoudini()
+            self.close()
+
 
     def initTable(self):
         self.hda_folders = glob.glob(os.path.join(self.houdini_otls, "hda_*"))
