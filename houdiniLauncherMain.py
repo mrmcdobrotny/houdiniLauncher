@@ -1,7 +1,11 @@
-import sys, os, glob, fnmatch, platform, json
+import sys, os, glob, platform, json
 
-from PySide2.QtWidgets import *
-from PySide2.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
+try:
+    from PySide2.QtWidgets import *
+    from PySide2.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
+except:
+    from Qt.QtWidgets import *
+    from Qt.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
 
 from uiHoudiniLauncher import Ui_HoudiniLauncher
 
@@ -10,9 +14,14 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
+        self.houdini_otls = "/media/white/tools/otls"
+        self.launcherRoot = "/media/white/tools/scripts/houdini/houdiniLauncher"
+        self.hdaLoaderRoot = "/media/white/tools/scripts/houdini/houdiniLoadHda"
         self.checkOS()
         self.initTable()
+        self.initPresetList()
         self.onStart()
+
 
 
         
@@ -36,22 +45,9 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         self.checkLoadFile.stateChanged.connect(self.checkLoad)
 
         ###
-        
+        self.presetList.currentTextChanged.connect(self.updatePresetContent)
 
-        #self.projects_location.textChanged.connect(self.populate)
         self.projects_location.editingFinished.connect(self.updateProjectsList)
-        #self.treeView.selectionModel().selectionChanged.connect(self.setPath)
-        #self.treeView.selectionModel().selectionChanged.connect(self.onStart)
-        #self.treeView.selectionModel().selectionChanged.connect(self.populate)
-        ##self.treeView.selectionModel().selectionChanged.connect(self.listProjects)
-        #self.projects_list.currentTextChanged.connect(self.setProject)
-        #self.tasksList.currentTextChanged.connect(self.setProject)
-        ##self.tasksList.currentTextChanged.connect(self.listShots)
-        ##self.tasksList.currentTextChanged.connect(self.setTasks)
-
-        ##self.projects_list.currentTextChanged.connect(self.populateBrowser)
-        ##self.shotsList.currentTextChanged.connect(self.populateBrowser)
-        ##self.taskTypeList.currentTextChanged.connect(self.populateBrowser)
 
         self.projects_list.currentTextChanged.connect(self.updateTasksList)
         self.projects_list.currentTextChanged.connect(self.updateShotsList)
@@ -81,8 +77,9 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.projects_location.setText("T:\\projects\\")
             self.os = "Windows"
 
+
     def initTable(self):
-        self.hda_folders = glob.glob("/media/white/tools/otls/hda_*")
+        self.hda_folders = glob.glob(os.path.join(self.houdini_otls, "hda_*"))
         self.hda_labels = []
         [self.hda_labels.append(os.path.split(path)[1][4:]) for path in self.hda_folders]
 
@@ -143,8 +140,10 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.shotsList.setCurrentIndex(settings["shotsList_current"])
             self.updateTaskTypeList()
             self.populateBrowser()
+            self.checkLoadPreset.setChecked(settings["checkLoadPreset"])
+            self.presetList.setCurrentIndex(settings["presetName"])
 
-        except (FileExistsError, KeyError) as e:
+        except (FileExistsError, KeyError, FileNotFoundError) as e:
             print("Exception")
             #self.setDefaultPath()
             self.updateProjectsList()
@@ -166,64 +165,43 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         settings["taskTypeList_current"] = self.taskTypeList.currentIndex()
         settings["shotsList_current"] = self.shotsList.currentIndex()
         settings["checkFx"] = self.checkFx.isChecked()
+        settings["presetName"] = self.presetList.currentIndex()
+        settings["checkLoadPreset"] = self.checkLoadPreset.isChecked()
 
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             isChecked = item.checkState() == Qt.Checked
             settings["check{}".format(item.text())] = isChecked
-        #print(settings)
 
-        """
-        settings["checkDefaultEnv"] = self.checkDefaultEnv.isChecked()
-        settings["checkProjectEnv"] = self.checkProjectEnv.isChecked()
-        settings["checkWowsEnv"] = self.checkWowsEnv.isChecked()
-        settings["checkOrcEnv"] = self.checkOrcEnv.isChecked()
-        settings["checkShEnv"] = self.checkShEnv.isChecked()
-        """
-        #print("Exiting")
         f = open(os.path.join(os.environ["HOME"], ".houdiniLauncher.conf"), "w")
         jsn = json.dumps(settings, indent = 4)
-        #print(jsn)
         f.write(jsn)
         f.close()
-        
-        #print(settings)
 
     def launchHoudini(self):
         prj = self.projects_list.currentData()
         #houdini_tools = os.path.join(prj, "houdini_tools")
-        houdini_otls = "/media/white/tools/otls"
+        #houdini_otls = "/media/white/tools/otls"
         houdini_otlscan_path = os.environ["HOUDINI_OTLSCAN_PATH"]
 
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             isChecked = item.checkState() == Qt.Checked
             otl_dirname = "hda_{}".format(item.text())
-            otl_path = os.path.join(houdini_otls, otl_dirname)
+            otl_path = os.path.join(self.houdini_otls, otl_dirname)
             if isChecked and not otl_path in os.environ["HOUDINI_OTLSCAN_PATH"]:
                 os.environ["HOUDINI_OTLSCAN_PATH"] = "{};{}".format(otl_path, os.environ["HOUDINI_OTLSCAN_PATH"])
 
-
-        """
-        otls_default = os.path.join(houdini_otls, "global")
-        otls_orc = os.path.join(houdini_otls, "orc")
-        otls_sh = os.path.join(houdini_otls, "SH")
-        otls_wows = os.path.join(houdini_otls, "wows")
-
-
-        if self.checkDefaultEnv.isChecked() and not otls_default in houdini_otlscan_path:
-            os.environ["HOUDINI_OTLSCAN_PATH"] = otls_default + ";" + houdini_otlscan_path
-
-        if self.checkOrcEnv.isChecked() and not otls_orc in houdini_otlscan_path:
-            os.environ["HOUDINI_OTLSCAN_PATH"] = otls_orc + ";" + houdini_otlscan_path
-
-        if self.checkShEnv.isChecked() and not otls_sh in houdini_otlscan_path:
-            os.environ["HOUDINI_OTLSCAN_PATH"] = otls_sh + ";" + houdini_otlscan_path
-
-        if self.checkWowsEnv.isChecked() and not otls_wows in houdini_otlscan_path:
-            os.environ["HOUDINI_OTLSCAN_PATH"] = otls_wows + ";" + houdini_otlscan_path
-        """
         print("HOUDINI_OTLSCAN_PATH={}\n".format(os.environ["HOUDINI_OTLSCAN_PATH"]))
+        #root = "/media/tools/scripts/houdini/houdiniLauncher"
+        if self.checkLoadPreset.isChecked():
+            jsnHdaList = json.dumps(self.presetContent)
+        else:
+            jsnHdaList = json.dumps([])
+            
+        with open(os.path.join(self.launcherRoot, ".loadHdaList"), "w") as f:
+            f.write(jsnHdaList)
+
         if self.checkFx.isChecked():
             houdini = "houdinifx"
         else:
@@ -237,13 +215,6 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             
             os.system('/bin/bash -c "{} {}"'.format(houdini, file))
 
-    def walk(self, path, pattern):
-        matches = []
-        for root, dirnames, filenames in os.walk(path):
-            isShot = 0
-            for filename in fnmatch.filter(filenames, pattern):
-                matches.append(os.path.join(root, filename))
-        return matches
 
     def checkLoad(self):
         if not self.checkLoadFile.isChecked():
@@ -268,7 +239,6 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.label_7.show()
             self.taskTypeList.show()
             
-            #self.adjustSize() 
         if self.tasksList.currentText() == "LOOKDEV" or not self.checkLoadFile.isChecked():
         
             self.shotsList.hide()
@@ -277,20 +247,8 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.shotsList.show()
             self.label_5.show()        
 
-    def populate(self):
-        path = self.projects_location.text()
-        self.model = QFileSystemModel()
-        self.model.setFilter(QDir.NoDotAndDotDot | QDir.Dirs)
-        self.model.setRootPath(QDir.rootPath())
-        self.treeView.setModel(self.model)
-        self.treeView.setRootIndex(self.model.index(path))
-        self.treeView.setSortingEnabled(True)
-        self.treeView.sortByColumn(0, Qt.AscendingOrder)
-        self.treeView.setColumnHidden(2, True)
-        self.treeView.setColumnHidden(1, True)
 
     def setDefaultPath(self):
-
         self.project_path = self.projects_list.currentData()
 
     def setPath(self):
@@ -376,47 +334,23 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
     def setProject(self):
         self.project = self.projects_list.currentText()
         self.project_path = self.projects_list.currentData()
-        #filter_tasks = ["CGI", "LOOKDEV"]
 
-        #tasks = os.listdir(self.project_path)
-
-        #self.tasksList.clear()
-        
-        #for task in tasks:
-        #    if task in filter_tasks:
-        #        self.tasksList.addItem(task, os.path.join(self.project_path, task))
-
-        #self.listShots()
-        #self.populateBrowser()
-
-        ##self.shotsModel = QFileSystemModel()
-        ##self.shotsModel.setRootPath(self.project_path)
-
-        ##self.proxyModel = QSortFilterProxyModel()
-        ##self.proxyModel.setSourceModel(self.shotsModel)
-        #self.proxyModel.setRecursiveFilteringEnabled(True)
-        #self.proxyModel.setFilterWildcard("|".join(filter_tasks))
-
-
-        ##self.treeViewShots.setModel(self.shotsModel)
-        ##rootId = self.shotsModel.index(os.path.join(self.project_path, self.tasksList.currentText()))
-        ##mappedId = self.proxyModel.mapFromSource(rootId)
-        
-        ##self.treeViewShots.setRootIndex(self.shotsModel.index(os.path.join(self.project_path, self.tasksList.currentText())))
-        ##self.treeViewShots.setSortingEnabled(True)
-        ##self.treeViewShots.sortByColumn(0, Qt.AscendingOrder)
-        ##self.treeViewShots.setColumnHidden(2, True)
-        ##self.treeViewShots.setColumnHidden(1, True)
-        
-        ###
-        #print(self.project_path)
-        #hipFiles = self.walk(self.project_path, "*.hip")
-        pth = [self.project_path, self.tasksList.currentText(), "*", self.taskTypeList.currentText(),"/*/*.hip"]
-        #print(pth)
-        pattern = os.path.join(*pth)
-        #print(pattern)
-        hipFiles = glob.glob(os.path.join(self.project_path, pattern))
-        #print(hipFiles)
+    def initPresetList(self):
+        #self.hdaLoaderRoot = "/media/white/tools/scripts/houdini/houdiniLoadHda/"
+        self.preset_path = os.path.join(self.hdaLoaderRoot, ".userpresets")
+        try:
+            with open(self.preset_path, 'r') as f:
+                try:
+                    self.preset = json.load(f)
+                except ValueError:
+                    self.preset = {}
+            for presetName in self.preset.keys():
+                self.presetList.addItem(presetName)
+        except IOError:
+            self.preset = {}
+        self.updatePresetContent()
+    def updatePresetContent(self):
+        self.presetContent = self.preset[self.presetList.currentText()]
 
 
             
