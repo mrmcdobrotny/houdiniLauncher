@@ -136,17 +136,29 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             self.checkFx.setChecked(settings["checkFx"])
             self.projects_location.setText(settings["projects_location"])
             self.updateProjectsList()
+
             self.projects_list.setCurrentIndex(settings["projects_list_current"])
             self.updateTasksList()
+
             self.tasksList.setCurrentIndex(settings["tasksList_current"])
             self.updateTaskTypeList()
-            self.taskTypeList.setCurrentIndex(settings["taskTypeList_current"])
+
+            #self.taskTypeList.setCurrentIndex(settings["taskTypeList_current"])
             self.updateShotsList()
+
             self.shotsList.setCurrentIndex(settings["shotsList_current"])
-            self.updateTaskTypeList()
-            self.populateBrowser()
+            #self.updateTaskTypeList()
+
+            #self.populateBrowser()
             self.checkLoadPreset.setChecked(settings["checkLoadPreset"])
-            self.presetList.setCurrentIndex(settings["presetName"])
+            #print(settings["presetName"])
+            self.presetList.setCurrentText(settings["presetName"])
+            self.checkLoadFile.setChecked(settings["checkLoadFile"])
+            self.checkLoad()
+            self.updateShotsList()
+            self.updateTaskTypeList()
+            self.taskTypeList.setCurrentIndex(settings["taskTypeList_current"])
+            self.populateBrowser()
 
         except (FileExistsError, KeyError, FileNotFoundError) as e:
             print("Exception")
@@ -170,7 +182,7 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         settings["taskTypeList_current"] = self.taskTypeList.currentIndex()
         settings["shotsList_current"] = self.shotsList.currentIndex()
         settings["checkFx"] = self.checkFx.isChecked()
-        settings["presetName"] = self.presetList.currentIndex()
+        settings["presetName"] = self.presetList.currentText()
         settings["checkLoadPreset"] = self.checkLoadPreset.isChecked()
 
         for index in range(self.listWidget.count()):
@@ -198,7 +210,10 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
                 os.environ["HOUDINI_OTLSCAN_PATH"] = "{};{}".format(otl_path, os.environ["HOUDINI_OTLSCAN_PATH"])
 
         print("HOUDINI_OTLSCAN_PATH={}\n".format(os.environ["HOUDINI_OTLSCAN_PATH"]))
+        os.putenv("HOUDINI_OTL_USERPRESET", self.presetList.currentText())
+        #print("user prest: {}".format(os.environ["HOUDINI_OTL_USERPRESET"]))
         #root = "/media/tools/scripts/houdini/houdiniLauncher"
+        """
         if self.checkLoadPreset.isChecked():
             jsnHdaList = json.dumps(self.presetContent)
         else:
@@ -206,11 +221,14 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
             
         with open(os.path.join(self.launcherRoot, ".loadHdaList"), "w") as f:
             f.write(jsnHdaList)
-
+        """
         if self.checkFx.isChecked():
+
             houdini = "houdinifx"
         else:
             houdini = "houdini"
+        #print(self.checkFx.isChecked())
+        #print(houdini)
         print("run '{}'".format(houdini))
         if not self.checkLoadFile.isChecked():
             os.system('/bin/bash -c "{}"'.format(houdini))
@@ -354,6 +372,7 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         except IOError:
             self.preset = {}
         self.updatePresetContent()
+
     def updatePresetContent(self):
         self.presetContent = self.preset[self.presetList.currentText()]
 
