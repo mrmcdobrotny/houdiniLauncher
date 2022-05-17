@@ -200,16 +200,21 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
         #houdini_tools = os.path.join(prj, "houdini_tools")
         #houdini_otls = "/media/white/tools/otls"
         houdini_otlscan_path = os.environ["HOUDINI_OTLSCAN_PATH"]
-
+        prependHoudiniPath = ""
         for index in range(self.listWidget.count()):
             item = self.listWidget.item(index)
             isChecked = item.checkState() == Qt.Checked
             otl_dirname = "hda_{}".format(item.text())
             otl_path = os.path.join(self.houdini_otls, otl_dirname)
             if isChecked and not otl_path in os.environ["HOUDINI_OTLSCAN_PATH"]:
-                os.environ["HOUDINI_OTLSCAN_PATH"] = "{};{}".format(otl_path, os.environ["HOUDINI_OTLSCAN_PATH"])
-
+                prependHoudiniPath += "{};".format(otl_path)
+                #os.environ["HOUDINI_OTLSCAN_PATH"] = "{};{}".format(otl_path, os.environ["HOUDINI_OTLSCAN_PATH"])
+        os.environ["HOUDINI_OTLSCAN_PATH"] = "{};{}".format(prependHoudiniPath, os.environ["HOUDINI_OTLSCAN_PATH"])
         print("HOUDINI_OTLSCAN_PATH={}\n".format(os.environ["HOUDINI_OTLSCAN_PATH"]))
+
+        #-----------------
+        #HOUDINI_OTL_USERPRESET environment variable is used by /media/white/tools/scripts/houdini/houdiniOnSceneStartupScripts/scripts/456.py script 
+        #to install hda's from /media/white/tools/scripts/houdini/houdiniLoadHda/.userpresets
         os.putenv("HOUDINI_OTL_USERPRESET", self.presetList.currentText())
         #print("user prest: {}".format(os.environ["HOUDINI_OTL_USERPRESET"]))
         #root = "/media/tools/scripts/houdini/houdiniLauncher"
