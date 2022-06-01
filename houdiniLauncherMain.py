@@ -3,30 +3,25 @@ import sys, os, glob, platform, json
 try:
     from PySide2.QtWidgets import *
     from PySide2.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
+    from PySide2.QtUiTools import loadUiType
 except:
     from Qt.QtWidgets import *
     from Qt.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
+    from Qt.QtUiTools import loadUiType
 
-from uiHoudiniLauncher import Ui_HoudiniLauncher
+generated_class, base_class = loadUiType('uiHoudiniLauncher.ui')
 
-
-class MainWindow(QMainWindow, Ui_HoudiniLauncher):
+class MainWindow(base_class, generated_class):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.houdini_otls = "/media/white/tools/otls"
-        self.launcherRoot = "/media/white/tools/scripts/houdini/houdiniLauncher"
+        #self.launcherRoot = "/media/white/tools/scripts/houdini/houdiniLauncher"
         self.hdaLoaderRoot = "/media/white/tools/scripts/houdini/houdiniLoadHda"
         self.checkOS()
         self.initTable()
         self.initPresetList()
         self.onStart()
-
-
-
-        
-        ##self.listProjects()
-        ##self.setDefaultPath()
 
         ### Setup completer
 
@@ -353,11 +348,16 @@ class MainWindow(QMainWindow, Ui_HoudiniLauncher):
 
     def updateTasksList(self):
         filter_tasks = ["CGI", "LOOKDEV"]
+        self.tasksList.clear()
+        for task in filter_tasks:
+            self.tasksList.addItem(task, os.path.join(self.projects_list.currentData(), task))
+        """
         tasks = os.listdir(self.projects_list.currentData())
         self.tasksList.clear()
         for task in tasks:
             if task in filter_tasks:
-                self.tasksList.addItem(task, os.path.join(self.projects_list.currentData(), task))        
+                self.tasksList.addItem(task, os.path.join(self.projects_list.currentData(), task))
+        """
 
     def setProject(self):
         self.project = self.projects_list.currentText()
