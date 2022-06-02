@@ -1,3 +1,4 @@
+#!/studio/afanasy/bin/python
 import sys, os, glob, platform, json
 
 try:
@@ -9,7 +10,7 @@ except:
     from Qt.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
     from Qt.QtUiTools import loadUiType
 
-generated_class, base_class = loadUiType('uiHoudiniLauncher.ui')
+generated_class, base_class = loadUiType(os.path.join(os.getcwd(),'uiHoudiniLauncher.ui'))
 
 class MainWindow(base_class, generated_class):
     def __init__(self):
