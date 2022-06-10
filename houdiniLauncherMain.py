@@ -42,47 +42,47 @@ class MainWindow(base_class, generated_class):
         # Setup completer
         model = QFileSystemModel()
         model.setRootPath(QDir.rootPath())
-        self.completer = QCompleter(self.projects_location)
+        self.completer = QCompleter(self.line_projects_location)
         self.completer.setModel(model)
         self.completer.setCompletionColumn(0)
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.completer.setCompletionPrefix(self.projects_location.text())
-        self.projects_location.setCompleter(self.completer)
+        self.completer.setCompletionPrefix(self.line_projects_location.text())
+        self.line_projects_location.setCompleter(self.completer)
 
         ###
 
         self.checkLoad()
-        self.checkLoadFile.stateChanged.connect(self.checkLoad)
+        self.checkbox_load_file.stateChanged.connect(self.checkLoad)
 
         ###
-        self.presetList.currentTextChanged.connect(self.updatePresetContent)
+        self.combo_presets_list.currentTextChanged.connect(self.updatePresetContent)
 
-        self.projects_location.editingFinished.connect(self.updateProjectsList)
+        self.line_projects_location.editingFinished.connect(self.update_combo_projects_list)
 
-        self.projects_list.currentTextChanged.connect(self.updateTasksList)
-        self.projects_list.currentTextChanged.connect(self.updateShotsList)
-        self.projects_list.currentTextChanged.connect(self.updateTaskTypeList)
-        self.projects_list.currentTextChanged.connect(self.populateBrowser)
+        self.combo_projects_list.currentTextChanged.connect(self.update_combo_types_list)
+        self.combo_projects_list.currentTextChanged.connect(self.update_shots_list)
+        self.combo_projects_list.currentTextChanged.connect(self.update_combo_tasks_list)
+        self.combo_projects_list.currentTextChanged.connect(self.populateBrowser)
 
-        self.tasksList.currentTextChanged.connect(self.updateShotsList)
-        self.tasksList.currentTextChanged.connect(self.updateTaskTypeList)
-        self.tasksList.currentTextChanged.connect(self.populateBrowser)
+        self.combo_types_list.currentTextChanged.connect(self.update_shots_list)
+        self.combo_types_list.currentTextChanged.connect(self.update_combo_tasks_list)
+        self.combo_types_list.currentTextChanged.connect(self.populateBrowser)
 
-        self.shotsList.currentTextChanged.connect(self.populateBrowser)
+        self.combo_shots_list.currentTextChanged.connect(self.populateBrowser)
 
-        self.taskTypeList.currentTextChanged.connect(self.populateBrowser)
+        self.combo_tasks_list.currentTextChanged.connect(self.populateBrowser)
 
-        self.checkLoadFile.stateChanged.connect(self.updateTaskTypeList)
+        self.checkbox_load_file.stateChanged.connect(self.update_combo_tasks_list)
 
         # self.savePreset.clicked.connect(self.onQuit)
-        # self.launch_project.clicked.connect(self.onQuit)
-        self.launch_project.clicked.connect(self.launchHoudini)
-        self.launch_project.clicked.connect(self.close)
+        # self.button_launch_project.clicked.connect(self.onQuit)
+        self.button_launch_project.clicked.connect(self.launchHoudini)
+        self.button_launch_project.clicked.connect(self.close)
 
     def checkOS(self):
         system = platform.system()
         if system == 'Windows':
-            self.projects_location.setText("T:\\projects\\")
+            self.line_projects_location.setText("T:\\projects\\")
             self.os = 'Windows'
 
     def keyPressEvent(self, event):
@@ -103,50 +103,50 @@ class MainWindow(base_class, generated_class):
             # item.setCheckable(True)
             # if inHdaFolder:
             #    item.setCheckState(QtCore.Qt.CheckState.Checked)
-            self.listWidget.addItem(item)
+            self.list_load_env.addItem(item)
 
     def onStart(self):
         try:
             settings = json.load(open(os.path.join(os.environ["HOME"], ".houdiniLauncher.conf")))
             
-            for index in range(self.listWidget.count()):
-                item = self.listWidget.item(index)
+            for index in range(self.list_load_env.count()):
+                item = self.list_load_env.item(index)
                 if settings["check{}".format(item.text())]:
                     state = Qt.Checked
                 else:
                     state = Qt.Unchecked
                 item.setCheckState(state)
 
-            self.checkFx.setChecked(settings["checkFx"])
-            self.projects_location.setText(settings["projects_location"])
-            self.updateProjectsList()
+            self.checkbox_fx.setChecked(settings["checkbox_fx_current"])
+            self.line_projects_location.setText(settings["line_projects_location_current"])
+            self.update_combo_projects_list()
 
-            self.projects_list.setCurrentIndex(settings["projects_list_current"])
-            self.updateTasksList()
+            self.combo_projects_list.setCurrentIndex(settings["combo_projects_list_current"])
+            self.update_combo_types_list()
 
-            self.tasksList.setCurrentIndex(settings["tasksList_current"])
-            self.updateTaskTypeList()
+            self.combo_types_list.setCurrentIndex(settings["combo_types_list_current"])
+            self.update_combo_tasks_list()
 
-            self.updateShotsList()
+            self.update_shots_list()
 
-            self.shotsList.setCurrentIndex(settings["shotsList_current"])
+            self.combo_shots_list.setCurrentIndex(settings["combo_shots_list_current"])
 
-            self.checkLoadPreset.setChecked(settings["checkLoadPreset"])
+            self.checkbox_load_preset.setChecked(settings["checkbox_load_preset_current"])
 
-            self.presetList.setCurrentText(settings["presetName"])
-            self.checkLoadFile.setChecked(settings["checkLoadFile"])
+            self.combo_presets_list.setCurrentText(settings["presetName"])
+            self.checkbox_load_file.setChecked(settings["checkbox_load_file_current"])
             self.checkLoad()
-            self.updateShotsList()
-            self.updateTaskTypeList()
-            self.taskTypeList.setCurrentIndex(settings["taskTypeList_current"])
+            self.update_shots_list()
+            self.update_combo_tasks_list()
+            self.combo_tasks_list.setCurrentIndex(settings["combo_tasks_list_current"])
             self.populateBrowser()
 
         except (FileExistsError, KeyError, FileNotFoundError) as e:
             print("Exception")
-            self.updateProjectsList()
-            self.updateTasksList()
-            self.updateTaskTypeList()
-            self.updateShotsList()
+            self.update_combo_projects_list()
+            self.update_combo_types_list()
+            self.update_combo_tasks_list()
+            self.update_shots_list()
             self.populateBrowser()
 
     def closeEvent(self, event):
@@ -154,32 +154,32 @@ class MainWindow(base_class, generated_class):
         
     def onQuit(self):
         settings = dict()
-        settings["projects_location"] = self.projects_location.text()
-        settings["projects_list_current"] = self.projects_list.currentIndex()
-        settings["checkLoadFile"] = self.checkLoadFile.isChecked()
-        settings["tasksList_current"] = self.tasksList.currentIndex()
-        settings["taskTypeList_current"] = self.taskTypeList.currentIndex()
-        settings["shotsList_current"] = self.shotsList.currentIndex()
-        settings["checkFx"] = self.checkFx.isChecked()
-        settings["presetName"] = self.presetList.currentText()
-        settings["checkLoadPreset"] = self.checkLoadPreset.isChecked()
+        settings["line_projects_location_current"] = self.line_projects_location.text()
+        settings["combo_projects_list_current"] = self.combo_projects_list.currentIndex()
+        settings["checkbox_load_file_current"] = self.checkbox_load_file.isChecked()
+        settings["combo_types_list_current"] = self.combo_types_list.currentIndex()
+        settings["combo_tasks_list_current"] = self.combo_tasks_list.currentIndex()
+        settings["combo_shots_list_current"] = self.combo_shots_list.currentIndex()
+        settings["checkbox_fx_current"] = self.checkbox_fx.isChecked()
+        settings["presetName"] = self.combo_presets_list.currentText()
+        settings["checkbox_load_preset_current"] = self.checkbox_load_preset.isChecked()
 
-        for index in range(self.listWidget.count()):
-            item = self.listWidget.item(index)
+        for index in range(self.list_load_env.count()):
+            item = self.list_load_env.item(index)
             isChecked = item.checkState() == Qt.Checked
             settings["check{}".format(item.text())] = isChecked
 
         f = open(os.path.join(os.environ["HOME"], ".houdiniLauncher.conf"), "w")
-        jsn = json.dumps(settings, indent = 4)
+        jsn = json.dumps(settings, indent=4)
         f.write(jsn)
         f.close()
 
     def launchHoudini(self):
-        prj = self.projects_list.currentData()
+        prj = self.combo_projects_list.currentData()
         houdini_otlscan_path = os.environ["HOUDINI_OTLSCAN_PATH"]
         prependHoudiniPath = ""
-        for index in range(self.listWidget.count()):
-            item = self.listWidget.item(index)
+        for index in range(self.list_load_env.count()):
+            item = self.list_load_env.item(index)
             isChecked = item.checkState() == Qt.Checked
             otl_dir_name = "hda_{}".format(item.text())
             otl_path = os.path.join(self.houdini_otls, otl_dir_name)
@@ -194,119 +194,119 @@ class MainWindow(base_class, generated_class):
         # /media/white/tools/scripts/houdini/houdiniOnSceneStartupScripts/scripts/456.py script
         # to install hda's from /media/white/tools/scripts/houdini/houdiniLoadHda/.userpresets
 
-        os.putenv("HOUDINI_OTL_USERPRESET", self.presetList.currentText())
-        if self.checkFx.isChecked():
+        os.putenv("HOUDINI_OTL_USERPRESET", self.combo_presets_list.currentText())
+        if self.checkbox_fx.isChecked():
             houdini = "houdinifx"
         else:
             houdini = "houdini"
         print("run '{}'".format(houdini))
-        if not self.checkLoadFile.isChecked():
+        if not self.checkbox_load_file.isChecked():
             os.system('/bin/bash -c "{}"'.format(houdini))
         else:
-            index = self.treeViewShots.currentIndex()
+            index = self.treeview_shots_browser.currentIndex()
             file = self.shotsModel.filePath(index)
             os.system('/bin/bash -c "{} {}"'.format(houdini, file))
 
     def checkLoad(self):
-        if not self.checkLoadFile.isChecked():
-            self.tasksList.hide()
-            self.shotsList.hide()
-            self.label_5.hide()
-            self.label_6.hide()
-            self.treeViewShots.hide()
-            self.label_3.hide()
-            self.label_7.hide()
-            self.taskTypeList.hide()
+        if not self.checkbox_load_file.isChecked():
+            self.combo_types_list.hide()
+            self.combo_shots_list.hide()
+            self.label_shots_list.hide()
+            self.label_types_list.hide()
+            self.treeview_shots_browser.hide()
+            self.label_shots_browser.hide()
+            self.label_tasks_list.hide()
+            self.combo_tasks_list.hide()
             self.adjustSize()
 
         else:
-            self.tasksList.show()
-            self.shotsList.show()
-            self.label_5.show()
-            self.label_6.show()
-            self.treeViewShots.show()
-            self.label_3.show()
-            self.label_7.show()
-            self.taskTypeList.show()
+            self.combo_types_list.show()
+            self.combo_shots_list.show()
+            self.label_shots_list.show()
+            self.label_types_list.show()
+            self.treeview_shots_browser.show()
+            self.label_shots_browser.show()
+            self.label_tasks_list.show()
+            self.combo_tasks_list.show()
             
-        if self.tasksList.currentText() == "LOOKDEV" or not self.checkLoadFile.isChecked():
-            self.shotsList.hide()
-            self.label_5.hide()
+        if self.combo_types_list.currentText() == "LOOKDEV" or not self.checkbox_load_file.isChecked():
+            self.combo_shots_list.hide()
+            self.label_shots_list.hide()
         else:
-            self.shotsList.show()
-            self.label_5.show()
+            self.combo_shots_list.show()
+            self.label_shots_list.show()
 
     def setDefaultPath(self):
-        self.project_path = self.projects_list.currentData()
+        self.project_path = self.combo_projects_list.currentData()
 
     def setPath(self):
         path = self.model.filePath(index)
-        self.projects_location.setText(path)
+        self.line_projects_location.setText(path)
 
-    def updateTaskTypeList(self):
-        taskType = self.tasksList.currentText()
+    def update_combo_tasks_list(self):
+        taskType = self.combo_types_list.currentText()
         defaultTasks = ["animation", "fx", "lighting", "layout"]
-        self.taskTypeList.clear()
-        if taskType == "LOOKDEV" or not self.checkLoadFile.isChecked():
-            defaultTasks = os.listdir(self.tasksList.currentData())
-            self.shotsList.hide()
-            self.label_5.hide()
+        self.combo_tasks_list.clear()
+        if taskType == "LOOKDEV" or not self.checkbox_load_file.isChecked():
+            defaultTasks = os.listdir(self.combo_types_list.currentData())
+            self.combo_shots_list.hide()
+            self.label_shots_list.hide()
         else:
-            self.shotsList.show()
-            self.label_5.show()
+            self.combo_shots_list.show()
+            self.label_shots_list.show()
         for task in defaultTasks:
-            self.taskTypeList.addItem(task)
+            self.combo_tasks_list.addItem(task)
 
-    def updateProjectsList(self):
-        listd = QDir.entryList(QDir(self.projects_location.text()), QDir.Dirs)
-        self.projects_list.clear()
+    def update_combo_projects_list(self):
+        listd = QDir.entryList(QDir(self.line_projects_location.text()), QDir.Dirs)
+        self.combo_projects_list.clear()
         for d in listd:
             if d != "." and d != ".." and not d.startswith('!'):
-                self.projects_list.addItem(d, str(os.path.join(self.projects_location.text(), d)))
+                self.combo_projects_list.addItem(d, str(os.path.join(self.line_projects_location.text(), d)))
 
-    def updateShotsList(self):
-        path = [self.projects_list.currentData(), self.tasksList.currentText()]
+    def update_shots_list(self):
+        path = [self.combo_projects_list.currentData(), self.combo_types_list.currentText()]
         try:
             path = os.path.join(*path)
         except TypeError:
             pass
-        self.shotsList.clear()
+        self.combo_shots_list.clear()
         try:
             listdir = os.listdir(path)
             for shot in listdir:
                 if not shot.startswith('.'):
-                    self.shotsList.addItem(shot, os.path.join(path, shot))
+                    self.combo_shots_list.addItem(shot, os.path.join(path, shot))
         except TypeError:
             pass
 
     def populateBrowser(self):
 
-        self.shotsModel.setRootPath(self.projects_list.currentData())
-        self.treeViewShots.setModel(self.shotsModel)
-        if self.tasksList.currentText() == 'CGI' and self.shotsList.currentData() is not None:
-            root = os.path.join(self.shotsList.currentData(), self.taskTypeList.currentText())
+        self.shotsModel.setRootPath(self.combo_projects_list.currentData())
+        self.treeview_shots_browser.setModel(self.shotsModel)
+        if self.combo_types_list.currentText() == 'CGI' and self.combo_shots_list.currentData() is not None:
+            root = os.path.join(self.combo_shots_list.currentData(), self.combo_tasks_list.currentText())
         else:
             root = ''
-        if self.tasksList.currentText() == 'LOOKDEV':
-            root = os.path.join(self.tasksList.currentData(), self.taskTypeList.currentText())
-        self.treeViewShots.setRootIndex(self.shotsModel.index(root))
-        self.treeViewShots.setSortingEnabled(True)
-        self.treeViewShots.sortByColumn(0, Qt.AscendingOrder)
-        self.treeViewShots.setColumnHidden(2, True)
-        self.treeViewShots.setColumnHidden(1, True)
+        if self.combo_types_list.currentText() == 'LOOKDEV':
+            root = os.path.join(self.combo_types_list.currentData(), self.combo_tasks_list.currentText())
+        self.treeview_shots_browser.setRootIndex(self.shotsModel.index(root))
+        self.treeview_shots_browser.setSortingEnabled(True)
+        self.treeview_shots_browser.sortByColumn(0, Qt.AscendingOrder)
+        self.treeview_shots_browser.setColumnHidden(2, True)
+        self.treeview_shots_browser.setColumnHidden(1, True)
 
-    def updateTasksList(self):
+    def update_combo_types_list(self):
         filter_tasks = ['CGI', 'LOOKDEV']
-        self.tasksList.clear()
+        self.combo_types_list.clear()
         for task in filter_tasks:
-            self.tasksList.addItem(task, os.path.join(self.projects_list.currentData(), task))
+            self.combo_types_list.addItem(task, os.path.join(self.combo_projects_list.currentData(), task))
 
     def setProject(self):
-        self.project = self.projects_list.currentText()
-        self.project_path = self.projects_list.currentData()
+        self.project = self.combo_projects_list.currentText()
+        self.project_path = self.combo_projects_list.currentData()
 
     def initPresetList(self):
-        self.preset_path = os.path.join(self.hdaLoaderRoot, ".userpresets")
+        self.preset_path = os.path.join(self.hdaLoaderRoot, '.userpresets')
         try:
             with open(self.preset_path, 'r') as f:
                 try:
@@ -314,13 +314,13 @@ class MainWindow(base_class, generated_class):
                 except ValueError:
                     self.preset = {}
             for presetName in self.preset.keys():
-                self.presetList.addItem(presetName)
+                self.combo_presets_list.addItem(presetName)
         except IOError:
             self.preset = {}
         self.updatePresetContent()
 
     def updatePresetContent(self):
-        self.presetContent = self.preset[self.presetList.currentText()]
+        self.presetContent = self.preset[self.combo_presets_list.currentText()]
 
 
 if __name__ == '__main__':
