@@ -40,7 +40,7 @@
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <item row="5" column="2">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="label_shots_list">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -53,10 +53,10 @@
        </widget>
       </item>
       <item row="9" column="4">
-       <widget class="QListWidget" name="listWidget"/>
+       <widget class="QListWidget" name="list_load_env"/>
       </item>
       <item row="1" column="2">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="label_projects_list">
         <property name="text">
          <string>Launch Project</string>
         </property>
@@ -66,10 +66,10 @@
        </widget>
       </item>
       <item row="10" column="4">
-       <widget class="QComboBox" name="presetList"/>
+       <widget class="QComboBox" name="combo_presets_list"/>
       </item>
       <item row="9" column="2">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label_load_env">
         <property name="text">
          <string>Load env</string>
         </property>
@@ -79,14 +79,14 @@
        </widget>
       </item>
       <item row="4" column="4">
-       <widget class="QComboBox" name="tasksList">
+       <widget class="QComboBox" name="combo_types_list">
         <property name="enabled">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="8" column="2">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label_shots_browser">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -99,14 +99,14 @@
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QLineEdit" name="projects_location">
+       <widget class="QLineEdit" name="line_projects_location">
         <property name="text">
          <string>/media/white/projects</string>
         </property>
        </widget>
       </item>
       <item row="6" column="2">
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="label_tasks_list">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -119,17 +119,17 @@
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="QComboBox" name="projects_list"/>
+       <widget class="QComboBox" name="combo_projects_list"/>
       </item>
       <item row="5" column="4">
-       <widget class="QComboBox" name="shotsList">
+       <widget class="QComboBox" name="combo_shots_list">
         <property name="enabled">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="10" column="2">
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="label_presets_list">
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
         </property>
@@ -142,7 +142,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_projects_location">
         <property name="text">
          <string>Projects Location</string>
         </property>
@@ -152,7 +152,7 @@
        </widget>
       </item>
       <item row="4" column="2">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="label_types_list">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -165,7 +165,7 @@
        </widget>
       </item>
       <item row="8" column="4">
-       <widget class="QTreeView" name="treeViewShots">
+       <widget class="QTreeView" name="treeview_shots_browser">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -184,21 +184,21 @@
        </widget>
       </item>
       <item row="3" column="4">
-       <widget class="QCheckBox" name="checkLoadFile">
+       <widget class="QCheckBox" name="checkbox_load_file">
         <property name="text">
          <string>Load scene file</string>
         </property>
        </widget>
       </item>
       <item row="2" column="4">
-       <widget class="QCheckBox" name="checkFx">
+       <widget class="QCheckBox" name="checkbox_fx">
         <property name="text">
          <string>FX</string>
         </property>
        </widget>
       </item>
       <item row="6" column="4">
-       <widget class="QComboBox" name="taskTypeList">
+       <widget class="QComboBox" name="combo_tasks_list">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -278,7 +278,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QPushButton" name="launch_project">
+          <widget class="QPushButton" name="button_launch_project">
            <property name="maximumSize">
             <size>
              <width>100</width>
@@ -307,7 +307,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkLoadPreset">
+          <widget class="QCheckBox" name="checkbox_load_preset">
            <property name="text">
             <string>Load Preset</string>
            </property>
