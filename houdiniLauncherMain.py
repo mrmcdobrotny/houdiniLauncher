@@ -10,8 +10,9 @@ except:
     from Qt.QtCore import QDir, Qt, QSortFilterProxyModel, QCoreApplication
     from Qt.QtUiTools import loadUiType
 
-# This works on PySide2 or Qt6, PySdie2 is put into /media/white/python2.7/site-packages 
-# to make this work on every machine $PYTHONPATH should be appended with /media/white/python2.7/site-packages in common environment setup
+# This works on PySide2 or Qt6, PySdie2 is put into /media/white/python_local/python3.8/site-packages 
+# to make this work on every machine $PYTHONPATH should be appended with /media/white/python_local/python3.8/site-packages in common environment setup
+# also pyside2-uic executable has been placed to /media/white/python_local/bin which has to be present in PATH env variable
 
 generated_class, base_class = loadUiType(os.path.join(sys.path[0],'uiHoudiniLauncher.ui'))
 
